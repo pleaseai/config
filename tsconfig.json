@@ -1,0 +1,10 @@
+{
+  "extends": "@pleaseai/typescript-config/base",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "baseUrl": "."
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", "tests"]
+}
