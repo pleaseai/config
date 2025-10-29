@@ -1,0 +1,275 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "code_review": {
+      "default": {
+        "disable": false,
+        "comment_severity_threshold": "MEDIUM",
+        "max_review_comments": -1,
+        "pull_request_opened": {
+          "help": false,
+          "summary": true,
+          "code_review": true,
+          "include_drafts": true
+        }
+      },
+      "type": "object",
+      "properties": {
+        "disable": {
+          "default": false,
+          "type": "boolean"
+        },
+        "comment_severity_threshold": {
+          "default": "MEDIUM",
+          "type": "string",
+          "enum": [
+            "LOW",
+            "MEDIUM",
+            "HIGH"
+          ]
+        },
+        "max_review_comments": {
+          "default": -1,
+          "type": "number"
+        },
+        "pull_request_opened": {
+          "default": {
+            "help": false,
+            "summary": true,
+            "code_review": true,
+            "include_drafts": true
+          },
+          "type": "object",
+          "properties": {
+            "help": {
+              "default": false,
+              "type": "boolean"
+            },
+            "summary": {
+              "default": true,
+              "type": "boolean"
+            },
+            "code_review": {
+              "default": true,
+              "type": "boolean"
+            },
+            "include_drafts": {
+              "default": true,
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "help",
+            "summary",
+            "code_review",
+            "include_drafts"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "disable",
+        "comment_severity_threshold",
+        "max_review_comments",
+        "pull_request_opened"
+      ],
+      "additionalProperties": false
+    },
+    "issue_workflow": {
+      "default": {
+        "disable": false,
+        "issue_opened": {
+          "post_dev_help": true
+        },
+        "triage": {
+          "auto": true,
+          "manual": true,
+          "update_issue_type": true
+        },
+        "investigate": {
+          "enabled": true,
+          "org_members_only": true,
+          "auto_on_bug_label": false
+        },
+        "fix": {
+          "enabled": true,
+          "org_members_only": true,
+          "require_investigation": false,
+          "auto_create_pr": true,
+          "auto_run_tests": true
+        }
+      },
+      "type": "object",
+      "properties": {
+        "disable": {
+          "default": false,
+          "type": "boolean"
+        },
+        "issue_opened": {
+          "default": {
+            "post_dev_help": true
+          },
+          "type": "object",
+          "properties": {
+            "post_dev_help": {
+              "default": true,
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "post_dev_help"
+          ],
+          "additionalProperties": false
+        },
+        "triage": {
+          "default": {
+            "auto": true,
+            "manual": true,
+            "update_issue_type": true
+          },
+          "type": "object",
+          "properties": {
+            "auto": {
+              "default": true,
+              "type": "boolean"
+            },
+            "manual": {
+              "default": true,
+              "type": "boolean"
+            },
+            "update_issue_type": {
+              "default": true,
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "auto",
+            "manual",
+            "update_issue_type"
+          ],
+          "additionalProperties": false
+        },
+        "investigate": {
+          "default": {
+            "enabled": true,
+            "org_members_only": true,
+            "auto_on_bug_label": false
+          },
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": true,
+              "type": "boolean"
+            },
+            "org_members_only": {
+              "default": true,
+              "type": "boolean"
+            },
+            "auto_on_bug_label": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "enabled",
+            "org_members_only",
+            "auto_on_bug_label"
+          ],
+          "additionalProperties": false
+        },
+        "fix": {
+          "default": {
+            "enabled": true,
+            "org_members_only": true,
+            "require_investigation": false,
+            "auto_create_pr": true,
+            "auto_run_tests": true
+          },
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": true,
+              "type": "boolean"
+            },
+            "org_members_only": {
+              "default": true,
+              "type": "boolean"
+            },
+            "require_investigation": {
+              "default": false,
+              "type": "boolean"
+            },
+            "auto_create_pr": {
+              "default": true,
+              "type": "boolean"
+            },
+            "auto_run_tests": {
+              "default": true,
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "enabled",
+            "org_members_only",
+            "require_investigation",
+            "auto_create_pr",
+            "auto_run_tests"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "disable",
+        "issue_opened",
+        "triage",
+        "investigate",
+        "fix"
+      ],
+      "additionalProperties": false
+    },
+    "code_workspace": {
+      "default": {
+        "enabled": true
+      },
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "default": true,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "enabled"
+      ],
+      "additionalProperties": false
+    },
+    "ignore_patterns": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "language": {
+      "default": "ko",
+      "type": "string",
+      "enum": [
+        "ko",
+        "en"
+      ]
+    }
+  },
+  "required": [
+    "code_review",
+    "issue_workflow",
+    "code_workspace",
+    "ignore_patterns",
+    "language"
+  ],
+  "additionalProperties": false,
+  "$id": "https://unpkg.com/@pleaseai/config@1.0.0/dist/schema.json",
+  "title": "PleaseAI Configuration Schema",
+  "description": "Configuration schema for PleaseAI GitHub bot and CLI",
+  "version": "1.0.0"
+}
