@@ -90,6 +90,39 @@ export const CodeWorkspaceConfigSchema = z.object({
 export type CodeWorkspaceConfig = z.infer<typeof CodeWorkspaceConfigSchema>
 
 /**
+ * Notion integration configuration
+ */
+export const NotionIntegrationConfigSchema = z.object({
+  enabled: z.boolean().default(false),
+  page_id: z.string().optional(),
+  database_id: z.string().optional(),
+})
+export type NotionIntegrationConfig = z.infer<typeof NotionIntegrationConfigSchema>
+
+/**
+ * Slack integration configuration
+ */
+export const SlackIntegrationConfigSchema = z.object({
+  enabled: z.boolean().default(false),
+  webhook_url: z.string().optional(),
+  channel: z.string().optional(),
+})
+export type SlackIntegrationConfig = z.infer<typeof SlackIntegrationConfigSchema>
+
+/**
+ * Integrations configuration
+ */
+export const IntegrationsConfigSchema = z.object({
+  notion: NotionIntegrationConfigSchema.optional().default({
+    enabled: false,
+  }),
+  slack: SlackIntegrationConfigSchema.optional().default({
+    enabled: false,
+  }),
+})
+export type IntegrationsConfig = z.infer<typeof IntegrationsConfigSchema>
+
+/**
  * Main configuration schema
  */
 export const ConfigSchema = z.object({
@@ -122,6 +155,10 @@ export const ConfigSchema = z.object({
   }),
   ignore_patterns: z.array(z.string()).default([]),
   language: Language.default('ko'),
+  integrations: IntegrationsConfigSchema.optional().default({
+    notion: { enabled: false },
+    slack: { enabled: false },
+  }),
 })
 export type Config = z.infer<typeof ConfigSchema>
 
@@ -158,4 +195,12 @@ export const DEFAULT_CONFIG: Config = {
   },
   ignore_patterns: [],
   language: 'ko',
+  integrations: {
+    notion: {
+      enabled: false,
+    },
+    slack: {
+      enabled: false,
+    },
+  },
 }
