@@ -244,6 +244,54 @@
       ],
       "additionalProperties": false
     },
+    "formatter": {
+      "default": {},
+      "anyOf": [
+        {
+          "type": "boolean",
+          "const": false
+        },
+        {
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "disabled": {
+                "type": "boolean"
+              },
+              "command": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "environment": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "extensions": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "command"
+            ],
+            "additionalProperties": false
+          }
+        }
+      ]
+    },
     "ignore_patterns": {
       "default": [],
       "type": "array",
@@ -258,14 +306,78 @@
         "ko",
         "en"
       ]
+    },
+    "integrations": {
+      "default": {
+        "notion": {
+          "enabled": false
+        },
+        "slack": {
+          "enabled": false
+        }
+      },
+      "type": "object",
+      "properties": {
+        "notion": {
+          "default": {
+            "enabled": false
+          },
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false,
+              "type": "boolean"
+            },
+            "page_id": {
+              "type": "string"
+            },
+            "database_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "enabled"
+          ],
+          "additionalProperties": false
+        },
+        "slack": {
+          "default": {
+            "enabled": false
+          },
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false,
+              "type": "boolean"
+            },
+            "webhook_url": {
+              "type": "string"
+            },
+            "channel": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "enabled"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "notion",
+        "slack"
+      ],
+      "additionalProperties": false
     }
   },
   "required": [
     "code_review",
     "issue_workflow",
     "code_workspace",
+    "formatter",
     "ignore_patterns",
-    "language"
+    "language",
+    "integrations"
   ],
   "additionalProperties": false,
   "$id": "https://unpkg.com/@pleaseai/config@1.0.0/dist/schema.json",

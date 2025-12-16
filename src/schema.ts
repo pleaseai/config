@@ -4,6 +4,26 @@ import { z } from 'zod'
  * Severity levels for review comments
  */
 export const SeverityLevel = z.enum(['LOW', 'MEDIUM', 'HIGH'])
+
+/**
+ * Individual formatter entry configuration
+ */
+export const FormatterEntrySchema = z.object({
+  disabled: z.boolean().optional(),
+  command: z.array(z.string()),
+  environment: z.record(z.string(), z.string()).optional(),
+  extensions: z.array(z.string()).optional(),
+})
+export type FormatterEntry = z.infer<typeof FormatterEntrySchema>
+
+/**
+ * Formatter configuration - can be false to disable all or object with named formatters
+ */
+export const FormatterConfigSchema = z.union([
+  z.literal(false),
+  z.record(z.string(), FormatterEntrySchema),
+])
+export type FormatterConfig = z.infer<typeof FormatterConfigSchema>
 export type SeverityLevel = z.infer<typeof SeverityLevel>
 
 /**
@@ -153,6 +173,7 @@ export const ConfigSchema = z.object({
   code_workspace: CodeWorkspaceConfigSchema.optional().default({
     enabled: true,
   }),
+  formatter: FormatterConfigSchema.optional().default({}),
   ignore_patterns: z.array(z.string()).default([]),
   language: Language.default('ko'),
   integrations: IntegrationsConfigSchema.optional().default({
@@ -193,6 +214,7 @@ export const DEFAULT_CONFIG: Config = {
   code_workspace: {
     enabled: true,
   },
+  formatter: {},
   ignore_patterns: [],
   language: 'ko',
   integrations: {

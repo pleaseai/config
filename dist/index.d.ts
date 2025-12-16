@@ -1,6 +1,26 @@
 import { z } from 'zod';
 
 /**
+ * Individual formatter entry configuration
+ */
+declare const FormatterEntrySchema: z.ZodObject<{
+    disabled: z.ZodOptional<z.ZodBoolean>;
+    command: z.ZodArray<z.ZodString>;
+    environment: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+    extensions: z.ZodOptional<z.ZodArray<z.ZodString>>;
+}, z.core.$strip>;
+type FormatterEntry = z.infer<typeof FormatterEntrySchema>;
+/**
+ * Formatter configuration - can be false to disable all or object with named formatters
+ */
+declare const FormatterConfigSchema: z.ZodUnion<readonly [z.ZodLiteral<false>, z.ZodRecord<z.ZodString, z.ZodObject<{
+    disabled: z.ZodOptional<z.ZodBoolean>;
+    command: z.ZodArray<z.ZodString>;
+    environment: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+    extensions: z.ZodOptional<z.ZodArray<z.ZodString>>;
+}, z.core.$strip>>]>;
+type FormatterConfig = z.infer<typeof FormatterConfigSchema>;
+/**
  * Severity levels for review comments
  */
 declare const SeverityLevel: z.ZodEnum<{
@@ -81,6 +101,40 @@ declare const CodeWorkspaceConfigSchema: z.ZodObject<{
 }, z.core.$strip>;
 type CodeWorkspaceConfig = z.infer<typeof CodeWorkspaceConfigSchema>;
 /**
+ * Notion integration configuration
+ */
+declare const NotionIntegrationConfigSchema: z.ZodObject<{
+    enabled: z.ZodDefault<z.ZodBoolean>;
+    page_id: z.ZodOptional<z.ZodString>;
+    database_id: z.ZodOptional<z.ZodString>;
+}, z.core.$strip>;
+type NotionIntegrationConfig = z.infer<typeof NotionIntegrationConfigSchema>;
+/**
+ * Slack integration configuration
+ */
+declare const SlackIntegrationConfigSchema: z.ZodObject<{
+    enabled: z.ZodDefault<z.ZodBoolean>;
+    webhook_url: z.ZodOptional<z.ZodString>;
+    channel: z.ZodOptional<z.ZodString>;
+}, z.core.$strip>;
+type SlackIntegrationConfig = z.infer<typeof SlackIntegrationConfigSchema>;
+/**
+ * Integrations configuration
+ */
+declare const IntegrationsConfigSchema: z.ZodObject<{
+    notion: z.ZodDefault<z.ZodOptional<z.ZodObject<{
+        enabled: z.ZodDefault<z.ZodBoolean>;
+        page_id: z.ZodOptional<z.ZodString>;
+        database_id: z.ZodOptional<z.ZodString>;
+    }, z.core.$strip>>>;
+    slack: z.ZodDefault<z.ZodOptional<z.ZodObject<{
+        enabled: z.ZodDefault<z.ZodBoolean>;
+        webhook_url: z.ZodOptional<z.ZodString>;
+        channel: z.ZodOptional<z.ZodString>;
+    }, z.core.$strip>>>;
+}, z.core.$strip>;
+type IntegrationsConfig = z.infer<typeof IntegrationsConfigSchema>;
+/**
  * Main configuration schema
  */
 declare const ConfigSchema: z.ZodObject<{
@@ -125,11 +179,29 @@ declare const ConfigSchema: z.ZodObject<{
     code_workspace: z.ZodDefault<z.ZodOptional<z.ZodObject<{
         enabled: z.ZodDefault<z.ZodBoolean>;
     }, z.core.$strip>>>;
+    formatter: z.ZodDefault<z.ZodOptional<z.ZodUnion<readonly [z.ZodLiteral<false>, z.ZodRecord<z.ZodString, z.ZodObject<{
+        disabled: z.ZodOptional<z.ZodBoolean>;
+        command: z.ZodArray<z.ZodString>;
+        environment: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+        extensions: z.ZodOptional<z.ZodArray<z.ZodString>>;
+    }, z.core.$strip>>]>>>;
     ignore_patterns: z.ZodDefault<z.ZodArray<z.ZodString>>;
     language: z.ZodDefault<z.ZodEnum<{
         ko: "ko";
         en: "en";
     }>>;
+    integrations: z.ZodDefault<z.ZodOptional<z.ZodObject<{
+        notion: z.ZodDefault<z.ZodOptional<z.ZodObject<{
+            enabled: z.ZodDefault<z.ZodBoolean>;
+            page_id: z.ZodOptional<z.ZodString>;
+            database_id: z.ZodOptional<z.ZodString>;
+        }, z.core.$strip>>>;
+        slack: z.ZodDefault<z.ZodOptional<z.ZodObject<{
+            enabled: z.ZodDefault<z.ZodBoolean>;
+            webhook_url: z.ZodOptional<z.ZodString>;
+            channel: z.ZodOptional<z.ZodString>;
+        }, z.core.$strip>>>;
+    }, z.core.$strip>>>;
 }, z.core.$strip>;
 type Config = z.infer<typeof ConfigSchema>;
 /**
@@ -261,5 +333,40 @@ declare function isDevHelpEnabled(config: Config): boolean;
  * @returns true if auto code review is enabled, false otherwise
  */
 declare function isAutoReviewEnabled(config: Config): boolean;
+/**
+ * Check if Notion integration is enabled
+ *
+ * @param config - Configuration object
+ * @returns true if Notion is enabled, false otherwise
+ */
+declare function isNotionEnabled(config: Config): boolean;
+/**
+ * Get Notion page ID from config
+ *
+ * @param config - Configuration object
+ * @returns Notion page ID or undefined
+ */
+declare function getNotionPageId(config: Config): string | undefined;
+/**
+ * Get Notion database ID from config
+ *
+ * @param config - Configuration object
+ * @returns Notion database ID or undefined
+ */
+declare function getNotionDatabaseId(config: Config): string | undefined;
+/**
+ * Check if Slack integration is enabled
+ *
+ * @param config - Configuration object
+ * @returns true if Slack is enabled, false otherwise
+ */
+declare function isSlackEnabled(config: Config): boolean;
+/**
+ * Get Slack webhook URL from config
+ *
+ * @param config - Configuration object
+ * @returns Slack webhook URL or undefined
+ */
+declare function getSlackWebhookUrl(config: Config): string | undefined;
 
-export { type CodeReviewConfig, CodeReviewConfigSchema, type CodeWorkspaceConfig, CodeWorkspaceConfigSchema, type Config, ConfigSchema, DEFAULT_CONFIG, type GenerateConfigOptions, type IssueWorkflowConfig, IssueWorkflowConfigSchema, Language, type PullRequestOpenedConfig, PullRequestOpenedConfigSchema, SeverityLevel, fixRequiresInvestigation, fixRequiresOrgMembership, generateConfig, generateConfigYAML, getLanguage, investigateRequiresOrgMembership, isAutoReviewEnabled, isAutoTriageEnabled, isCodeReviewDisabled, isCodeWorkspaceEnabled, isDevHelpEnabled, isFixEnabled, isInvestigateEnabled, isManualTriageEnabled, loadConfig, loadConfigFromGitHub, shouldAutoCreatePR, shouldAutoInvestigateOnBugLabel, shouldAutoRunTests, shouldReviewPR, shouldShowHelp, shouldShowSummary, shouldUpdateIssueType };
+export { type CodeReviewConfig, CodeReviewConfigSchema, type CodeWorkspaceConfig, CodeWorkspaceConfigSchema, type Config, ConfigSchema, DEFAULT_CONFIG, type FormatterConfig, FormatterConfigSchema, type FormatterEntry, FormatterEntrySchema, type GenerateConfigOptions, type IntegrationsConfig, IntegrationsConfigSchema, type IssueWorkflowConfig, IssueWorkflowConfigSchema, Language, type NotionIntegrationConfig, NotionIntegrationConfigSchema, type PullRequestOpenedConfig, PullRequestOpenedConfigSchema, SeverityLevel, type SlackIntegrationConfig, SlackIntegrationConfigSchema, fixRequiresInvestigation, fixRequiresOrgMembership, generateConfig, generateConfigYAML, getLanguage, getNotionDatabaseId, getNotionPageId, getSlackWebhookUrl, investigateRequiresOrgMembership, isAutoReviewEnabled, isAutoTriageEnabled, isCodeReviewDisabled, isCodeWorkspaceEnabled, isDevHelpEnabled, isFixEnabled, isInvestigateEnabled, isManualTriageEnabled, isNotionEnabled, isSlackEnabled, loadConfig, loadConfigFromGitHub, shouldAutoCreatePR, shouldAutoInvestigateOnBugLabel, shouldAutoRunTests, shouldReviewPR, shouldShowHelp, shouldShowSummary, shouldUpdateIssueType };

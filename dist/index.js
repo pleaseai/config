@@ -1,6 +1,16 @@
 // src/schema.ts
 import { z } from "zod";
 var SeverityLevel = z.enum(["LOW", "MEDIUM", "HIGH"]);
+var FormatterEntrySchema = z.object({
+  disabled: z.boolean().optional(),
+  command: z.array(z.string()),
+  environment: z.record(z.string(), z.string()).optional(),
+  extensions: z.array(z.string()).optional()
+});
+var FormatterConfigSchema = z.union([
+  z.literal(false),
+  z.record(z.string(), FormatterEntrySchema)
+]);
 var Language = z.enum(["ko", "en"]);
 var PullRequestOpenedConfigSchema = z.object({
   help: z.boolean().default(false),
@@ -55,6 +65,24 @@ var IssueWorkflowConfigSchema = z.object({
 var CodeWorkspaceConfigSchema = z.object({
   enabled: z.boolean().default(true)
 });
+var NotionIntegrationConfigSchema = z.object({
+  enabled: z.boolean().default(false),
+  page_id: z.string().optional(),
+  database_id: z.string().optional()
+});
+var SlackIntegrationConfigSchema = z.object({
+  enabled: z.boolean().default(false),
+  webhook_url: z.string().optional(),
+  channel: z.string().optional()
+});
+var IntegrationsConfigSchema = z.object({
+  notion: NotionIntegrationConfigSchema.optional().default({
+    enabled: false
+  }),
+  slack: SlackIntegrationConfigSchema.optional().default({
+    enabled: false
+  })
+});
 var ConfigSchema = z.object({
   code_review: CodeReviewConfigSchema.optional().default({
     disable: false,
@@ -83,8 +111,13 @@ var ConfigSchema = z.object({
   code_workspace: CodeWorkspaceConfigSchema.optional().default({
     enabled: true
   }),
+  formatter: FormatterConfigSchema.optional().default({}),
   ignore_patterns: z.array(z.string()).default([]),
-  language: Language.default("ko")
+  language: Language.default("ko"),
+  integrations: IntegrationsConfigSchema.optional().default({
+    notion: { enabled: false },
+    slack: { enabled: false }
+  })
 });
 var DEFAULT_CONFIG = {
   code_review: {
@@ -114,8 +147,17 @@ var DEFAULT_CONFIG = {
   code_workspace: {
     enabled: true
   },
+  formatter: {},
   ignore_patterns: [],
-  language: "ko"
+  language: "ko",
+  integrations: {
+    notion: {
+      enabled: false
+    },
+    slack: {
+      enabled: false
+    }
+  }
 };
 
 // src/loader.ts
@@ -252,20 +294,43 @@ function isDevHelpEnabled(config) {
 function isAutoReviewEnabled(config) {
   return config.code_review?.pull_request_opened?.code_review ?? true;
 }
+function isNotionEnabled(config) {
+  return config.integrations?.notion?.enabled ?? false;
+}
+function getNotionPageId(config) {
+  return config.integrations?.notion?.page_id;
+}
+function getNotionDatabaseId(config) {
+  return config.integrations?.notion?.database_id;
+}
+function isSlackEnabled(config) {
+  return config.integrations?.slack?.enabled ?? false;
+}
+function getSlackWebhookUrl(config) {
+  return config.integrations?.slack?.webhook_url;
+}
 export {
   CodeReviewConfigSchema,
   CodeWorkspaceConfigSchema,
   ConfigSchema,
   DEFAULT_CONFIG,
+  FormatterConfigSchema,
+  FormatterEntrySchema,
+  IntegrationsConfigSchema,
   IssueWorkflowConfigSchema,
   Language,
+  NotionIntegrationConfigSchema,
   PullRequestOpenedConfigSchema,
   SeverityLevel,
+  SlackIntegrationConfigSchema,
   fixRequiresInvestigation,
   fixRequiresOrgMembership,
   generateConfig,
   generateConfigYAML,
   getLanguage,
+  getNotionDatabaseId,
+  getNotionPageId,
+  getSlackWebhookUrl,
   investigateRequiresOrgMembership,
   isAutoReviewEnabled,
   isAutoTriageEnabled,
@@ -275,6 +340,8 @@ export {
   isFixEnabled,
   isInvestigateEnabled,
   isManualTriageEnabled,
+  isNotionEnabled,
+  isSlackEnabled,
   loadConfig,
   loadConfigFromGitHub,
   shouldAutoCreatePR,
