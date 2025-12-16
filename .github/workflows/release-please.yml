@@ -45,6 +45,11 @@ jobs:
         if: ${{ steps.release.outputs.release_created }}
         run: bun run build
 
+      # Ensure npm 11.5.1 or later is installed
+      - name: Update npm
+        if: ${{ steps.release.outputs.release_created }}
+        run: npm install -g npm@latest
+
       - name: Publish to npm
         if: ${{ steps.release.outputs.release_created }}
         run: npm publish --access public
