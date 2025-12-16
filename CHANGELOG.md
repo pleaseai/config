@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/pleaseai/config/compare/v1.1.0...v1.1.1) (2025-12-16)
+
+
+### Bug Fixes
+
+* **ci:** remove invalid package-name input from release-please ([b4a52d2](https://github.com/pleaseai/config/commit/b4a52d201763c4d60550a81a25805ac9ea71152c))
+
 ## [1.1.0](https://github.com/pleaseai/config/compare/v1.0.0...v1.1.0) (2025-12-16)
 
 
