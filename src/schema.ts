@@ -24,6 +24,28 @@ export const FormatterConfigSchema = z.union([
   z.record(z.string(), FormatterEntrySchema),
 ])
 export type FormatterConfig = z.infer<typeof FormatterConfigSchema>
+
+/**
+ * Individual LSP entry configuration
+ */
+export const LspEntrySchema = z.object({
+  disabled: z.boolean().optional(),
+  command: z.array(z.string()).optional(),
+  extensions: z.array(z.string()).optional(),
+  env: z.record(z.string(), z.string()).optional(),
+  initialization: z.record(z.string(), z.unknown()).optional(),
+})
+export type LspEntry = z.infer<typeof LspEntrySchema>
+
+/**
+ * LSP configuration - can be false to disable all or object with named language servers
+ */
+export const LspConfigSchema = z.union([
+  z.literal(false),
+  z.record(z.string(), LspEntrySchema),
+])
+export type LspConfig = z.infer<typeof LspConfigSchema>
+
 export type SeverityLevel = z.infer<typeof SeverityLevel>
 
 /**
@@ -174,6 +196,7 @@ export const ConfigSchema = z.object({
     enabled: true,
   }),
   formatter: FormatterConfigSchema.optional().default({}),
+  lsp: LspConfigSchema.optional().default({}),
   ignore_patterns: z.array(z.string()).default([]),
   language: Language.default('ko'),
   integrations: IntegrationsConfigSchema.optional().default({
@@ -215,6 +238,7 @@ export const DEFAULT_CONFIG: Config = {
     enabled: true,
   },
   formatter: {},
+  lsp: {},
   ignore_patterns: [],
   language: 'ko',
   integrations: {
