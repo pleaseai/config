@@ -292,6 +292,58 @@
         }
       ]
     },
+    "lsp": {
+      "default": {},
+      "anyOf": [
+        {
+          "type": "boolean",
+          "const": false
+        },
+        {
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "disabled": {
+                "type": "boolean"
+              },
+              "command": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "extensions": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "env": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "initialization": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {}
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      ]
+    },
     "ignore_patterns": {
       "default": [],
       "type": "array",
@@ -375,6 +427,7 @@
     "issue_workflow",
     "code_workspace",
     "formatter",
+    "lsp",
     "ignore_patterns",
     "language",
     "integrations"

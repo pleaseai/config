@@ -21,6 +21,28 @@ declare const FormatterConfigSchema: z.ZodUnion<readonly [z.ZodLiteral<false>, z
 }, z.core.$strip>>]>;
 type FormatterConfig = z.infer<typeof FormatterConfigSchema>;
 /**
+ * Individual LSP entry configuration
+ */
+declare const LspEntrySchema: z.ZodObject<{
+    disabled: z.ZodOptional<z.ZodBoolean>;
+    command: z.ZodOptional<z.ZodArray<z.ZodString>>;
+    extensions: z.ZodOptional<z.ZodArray<z.ZodString>>;
+    env: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+    initialization: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+}, z.core.$strip>;
+type LspEntry = z.infer<typeof LspEntrySchema>;
+/**
+ * LSP configuration - can be false to disable all or object with named language servers
+ */
+declare const LspConfigSchema: z.ZodUnion<readonly [z.ZodLiteral<false>, z.ZodRecord<z.ZodString, z.ZodObject<{
+    disabled: z.ZodOptional<z.ZodBoolean>;
+    command: z.ZodOptional<z.ZodArray<z.ZodString>>;
+    extensions: z.ZodOptional<z.ZodArray<z.ZodString>>;
+    env: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+    initialization: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+}, z.core.$strip>>]>;
+type LspConfig = z.infer<typeof LspConfigSchema>;
+/**
  * Severity levels for review comments
  */
 declare const SeverityLevel: z.ZodEnum<{
@@ -184,6 +206,13 @@ declare const ConfigSchema: z.ZodObject<{
         command: z.ZodArray<z.ZodString>;
         environment: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
         extensions: z.ZodOptional<z.ZodArray<z.ZodString>>;
+    }, z.core.$strip>>]>>>;
+    lsp: z.ZodDefault<z.ZodOptional<z.ZodUnion<readonly [z.ZodLiteral<false>, z.ZodRecord<z.ZodString, z.ZodObject<{
+        disabled: z.ZodOptional<z.ZodBoolean>;
+        command: z.ZodOptional<z.ZodArray<z.ZodString>>;
+        extensions: z.ZodOptional<z.ZodArray<z.ZodString>>;
+        env: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
+        initialization: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
     }, z.core.$strip>>]>>>;
     ignore_patterns: z.ZodDefault<z.ZodArray<z.ZodString>>;
     language: z.ZodDefault<z.ZodEnum<{
@@ -369,4 +398,4 @@ declare function isSlackEnabled(config: Config): boolean;
  */
 declare function getSlackWebhookUrl(config: Config): string | undefined;
 
-export { type CodeReviewConfig, CodeReviewConfigSchema, type CodeWorkspaceConfig, CodeWorkspaceConfigSchema, type Config, ConfigSchema, DEFAULT_CONFIG, type FormatterConfig, FormatterConfigSchema, type FormatterEntry, FormatterEntrySchema, type GenerateConfigOptions, type IntegrationsConfig, IntegrationsConfigSchema, type IssueWorkflowConfig, IssueWorkflowConfigSchema, Language, type NotionIntegrationConfig, NotionIntegrationConfigSchema, type PullRequestOpenedConfig, PullRequestOpenedConfigSchema, SeverityLevel, type SlackIntegrationConfig, SlackIntegrationConfigSchema, fixRequiresInvestigation, fixRequiresOrgMembership, generateConfig, generateConfigYAML, getLanguage, getNotionDatabaseId, getNotionPageId, getSlackWebhookUrl, investigateRequiresOrgMembership, isAutoReviewEnabled, isAutoTriageEnabled, isCodeReviewDisabled, isCodeWorkspaceEnabled, isDevHelpEnabled, isFixEnabled, isInvestigateEnabled, isManualTriageEnabled, isNotionEnabled, isSlackEnabled, loadConfig, loadConfigFromGitHub, shouldAutoCreatePR, shouldAutoInvestigateOnBugLabel, shouldAutoRunTests, shouldReviewPR, shouldShowHelp, shouldShowSummary, shouldUpdateIssueType };
+export { type CodeReviewConfig, CodeReviewConfigSchema, type CodeWorkspaceConfig, CodeWorkspaceConfigSchema, type Config, ConfigSchema, DEFAULT_CONFIG, type FormatterConfig, FormatterConfigSchema, type FormatterEntry, FormatterEntrySchema, type GenerateConfigOptions, type IntegrationsConfig, IntegrationsConfigSchema, type IssueWorkflowConfig, IssueWorkflowConfigSchema, Language, type LspConfig, LspConfigSchema, type LspEntry, LspEntrySchema, type NotionIntegrationConfig, NotionIntegrationConfigSchema, type PullRequestOpenedConfig, PullRequestOpenedConfigSchema, SeverityLevel, type SlackIntegrationConfig, SlackIntegrationConfigSchema, fixRequiresInvestigation, fixRequiresOrgMembership, generateConfig, generateConfigYAML, getLanguage, getNotionDatabaseId, getNotionPageId, getSlackWebhookUrl, investigateRequiresOrgMembership, isAutoReviewEnabled, isAutoTriageEnabled, isCodeReviewDisabled, isCodeWorkspaceEnabled, isDevHelpEnabled, isFixEnabled, isInvestigateEnabled, isManualTriageEnabled, isNotionEnabled, isSlackEnabled, loadConfig, loadConfigFromGitHub, shouldAutoCreatePR, shouldAutoInvestigateOnBugLabel, shouldAutoRunTests, shouldReviewPR, shouldShowHelp, shouldShowSummary, shouldUpdateIssueType };

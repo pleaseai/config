@@ -11,6 +11,17 @@ var FormatterConfigSchema = z.union([
   z.literal(false),
   z.record(z.string(), FormatterEntrySchema)
 ]);
+var LspEntrySchema = z.object({
+  disabled: z.boolean().optional(),
+  command: z.array(z.string()).optional(),
+  extensions: z.array(z.string()).optional(),
+  env: z.record(z.string(), z.string()).optional(),
+  initialization: z.record(z.string(), z.unknown()).optional()
+});
+var LspConfigSchema = z.union([
+  z.literal(false),
+  z.record(z.string(), LspEntrySchema)
+]);
 var Language = z.enum(["ko", "en"]);
 var PullRequestOpenedConfigSchema = z.object({
   help: z.boolean().default(false),
@@ -112,6 +123,7 @@ var ConfigSchema = z.object({
     enabled: true
   }),
   formatter: FormatterConfigSchema.optional().default({}),
+  lsp: LspConfigSchema.optional().default({}),
   ignore_patterns: z.array(z.string()).default([]),
   language: Language.default("ko"),
   integrations: IntegrationsConfigSchema.optional().default({
@@ -148,6 +160,7 @@ var DEFAULT_CONFIG = {
     enabled: true
   },
   formatter: {},
+  lsp: {},
   ignore_patterns: [],
   language: "ko",
   integrations: {
@@ -319,6 +332,8 @@ export {
   IntegrationsConfigSchema,
   IssueWorkflowConfigSchema,
   Language,
+  LspConfigSchema,
+  LspEntrySchema,
   NotionIntegrationConfigSchema,
   PullRequestOpenedConfigSchema,
   SeverityLevel,
